@@ -1,0 +1,27 @@
+ul {
+    column-count: 1;
+    -webkit-column-count: 1;
+    -moz-column-count: 1;
+    list-style-type: none;
+    background-color: #d6d6f3;
+    width: 90%;
+    max-width: 35rem;
+    border-radius: 20px;
+    margin: 2rem auto;
+    padding: 1px;
+}
+
+ul li {
+    text-align: center;
+    width: 100%;
+    font-size: 3rem;
+    padding: 2rem 1rem;
+}
+
+h1 {
+    color: #e11414;
+    text-align: center;
+    font-family: "Andale Mono", sans-serif;
+    font-size: 40px;
+    text-decoration: underline;
+}

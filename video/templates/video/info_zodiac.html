@@ -1,0 +1,21 @@
+{% extends 'base.html'%}
+{% load static %}
+
+{% block css_additional %}
+    <link rel="stylesheet" href=" {% static 'video/css/info.css' %} ">
+{% endblock %}
+
+{% block title %}
+    Гороскоп для {{ sign|upper }}
+{% endblock %}
+
+
+{% block content %}
+    {% include 'includes/novbar.html' %}
+    <h1>{{ sign_name }}</h1>
+    {% if description is None %}
+        <h2>неправильный знак зодиака - {{ sign|upper }}</h2>
+    {% else %}
+        <h2>{{ description|capfirst|title }}</h2>
+    {% endif %}
+{% endblock %}
