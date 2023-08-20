@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.urls import reverse
+from django.template.loader import render_to_string
+from  dataclasses import dataclass
 # Create your views here.
 
 zodiac_dict = {
@@ -14,10 +16,9 @@ zodiac_dict = {
     'Scorpio': 'Скорпион - восьмой знак зодиака, планета Марс (с 24 октября по 22 ноября).',
     'Sagittarius': 'Стрелец - девятый знак зодиака, планета Юпитер (с 23 ноября по 22 декабря).',
     'Capricorn': 'Козерог - десятый знак зодиака, планета Сатурн (с 23 декабря по 20 января).',
-    ' Aquarius': 'Водолей - одиннадцатый знак зодиака, планеты Уран и Сатурн (с 21 января по 19 февраля).',
+    'Aquarius': 'Водолей - одиннадцатый знак зодиака, планеты Уран и Сатурн (с 21 января по 19 февраля).',
     'Pisces': 'Рыбы - двенадцатый знак зодиака, планеты Юпитер (с 20 февраля по 20 марта).',
 }
-
 types = {
     'fire' : ['Aries', 'Leo', 'Sagittarius'],
     'eqrth' : ['Taurus', 'Virgo', 'Capricorn'],
@@ -34,36 +35,65 @@ types = {
 #         return HttpResponse('Телец второй знак ')
 #     else:
 #         return HttpResponseNotFound(f'неизвестный знак зодиака {sign_zodiac}')
+# def index(request):
+#     # Получаем список всех знаков зодиака из словаря
+#     zodiacs = list(zodiac_dict)
+#     # Инициализируем переменную для сохранения HTML-кода ссылок
+#     rez = ''
+#     # Проходимся по каждому знаку зодиака
+#     for sign in zodiacs:
+#         # Создаем URL-путь для конкретного знака, используя его имя
+#         redirect_path = reverse('horoscope-name', args=[sign, ])
+#         # Добавляем HTML-код ссылки на знак зодиака в переменную rez
+#         rez += f"<li> <a href='{redirect_path}'>{sign.title()}</a> </li>"
+#     # Генерируем итоговый HTML-код списка ссылок на знаки зодиака
+#     response = f"""
+#     <ol>
+#         {rez}
+#     </ol>
+#
+#     """
+#     # Возвращаем HTTP-ответ с итоговым HTML-кодом
+#    return HttpResponse(response)
+#пробуем работать с тегом for
 def index(request):
-    # Получаем список всех знаков зодиака из словаря
     zodiacs = list(zodiac_dict)
-    # Инициализируем переменную для сохранения HTML-кода ссылок
-    rez = ''
-    # Проходимся по каждому знаку зодиака
-    for sign in zodiacs:
-        # Создаем URL-путь для конкретного знака, используя его имя
-        redirect_path = reverse('horoscope-name', args=[sign, ])
-        # Добавляем HTML-код ссылки на знак зодиака в переменную rez
-        rez += f"<li> <a href='{redirect_path}'>{sign}</a> </li>"
-    # Генерируем итоговый HTML-код списка ссылок на знаки зодиака
-    response = f"""
-    <ol>
-        {rez}
-    </ol>
+    context = {
+        'zodiacs':zodiacs,
+        'zodiac_dict': zodiac_dict,
+    }
+    return render(request, 'video/index.html', context=context)
 
-    """
-    # Возвращаем HTTP-ответ с итоговым HTML-кодом
-    return HttpResponse(response)
+# def det_info_about_sign_zadiac(request, sign_zodiac: str):
+#     # Получаем описание знака зодиака из словаря
+#     description = zodiac_dict.get(sign_zodiac, None)
+#     if description:
+#         # Возвращаем HTTP-ответ с описанием знака зодиака в виде заголовка
+#         return HttpResponse(f'<h2> {description}</h2>')
+#     else:
+#         # Возвращаем HTTP-ответ с сообщением об ошибке, если знак не найден
+#         return HttpResponseNotFound(f"неизвестный знак зодиака- {sign_zodiac}")
+# @dataclass
+# class Person:
+#     name: str
+#     age:int
+#     def __str__(self):
+#         return f"это {self.name}"
 
 def det_info_about_sign_zadiac(request, sign_zodiac: str):
-    # Получаем описание знака зодиака из словаря
-    description = zodiac_dict.get(sign_zodiac, None)
-    if description:
-        # Возвращаем HTTP-ответ с описанием знака зодиака в виде заголовка
-        return HttpResponse(f'<h2> {description}</h2>')
-    else:
-        # Возвращаем HTTP-ответ с сообщением об ошибке, если знак не найден
-        return HttpResponseNotFound(f"неизвестный знак зодиака- {sign_zodiac}")
+    description = zodiac_dict.get(sign_zodiac)
+    zodiacs = list(zodiac_dict)
+    data = {
+        'description' : description,
+        'sign': sign_zodiac,
+        'zodiacs': zodiacs,
+        'sign_name': description.split()[0],
+        # 'my_int': 122,
+        # 'my_float': 34.4,
+        # 'my_class': Person('Will', 66),
+        # 'my_list': [1,2,3]
+    }
+    return render(request, 'video/info_zodiac.html', context=data)
 
 def det_info_about_sign_zadiac_by_number(request, sign_zodiac: int):
     # Получаем список всех знаков зодиака
@@ -77,6 +107,8 @@ def det_info_about_sign_zadiac_by_number(request, sign_zodiac: int):
     redirect_url = reverse('horoscope-name', args=[name_zodiac, ])
     # Выполняем перенаправление на созданный URL-путь
     return HttpResponseRedirect(redirect_url)
+
+
 def get_signs_by_element(request, element):
     # Преобразуем переданный элемент в нижний регистр
     element = element.lower()
